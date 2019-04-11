@@ -10,5 +10,8 @@ export default {
   },
   loadProjects: function () {
     return api.get('projectapi/list')
+  },
+  workinghourapi: function (query) {
+    return api.get('workinghourapi/list', { params: query })
   }
 }
