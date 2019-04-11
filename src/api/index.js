@@ -1,7 +1,10 @@
 import axios from 'axios'
+import jsonpAdapter from 'axios-jsonp'
 
 let api = axios.create({
-  baseURL: 'http://117.48.208.154:8181/'
+  baseURL: 'http://117.48.208.154:8181/',
+  adapter: jsonpAdapter,
+  callbackParamName: 'callback'
 })
 
 export default {
