@@ -1,5 +1,56 @@
 .page-login{
     width: 100%;
     height: 100%;
+    background-color: #fff;
     position: relative;
+}
+
+.login-warp{
+    width: 80%;
+    transform: translateX(-50%) translateY(-50%);
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    .logo{
+        width: 60px;
+        height: 100px;
+        margin: auto;
+        margin-bottom: 50px;
+        background-image: url('../../img/logo.png');
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    .mint-cell{
+        border-bottom: 1px solid #e1dcdc;
+        background-color: transparent;
+        &:last-child{
+            background-image: none;
+        }
+    }
+
+    .mint-cell-wrapper{
+        font-size: 14px;
+        background-image: none;
+    }
+
+    .mint-field{
+        .mint-cell-title{
+            width: 60px;
+        }
+
+        .mint-field-core{
+            background: transparent;
+        }
+    }
+
+    .login-btn{
+        margin-top: 50px;
+        .mint-button{
+            display: block;
+            width: 80%;
+            margin: auto;
+            border-radius: 22px;
+        }
+    }
 }
