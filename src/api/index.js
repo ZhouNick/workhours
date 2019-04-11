@@ -14,7 +14,20 @@ export default {
   loadProjects: function () {
     return api.get('projectapi/list')
   },
+  // 接口列表3
   workinghourapi: function (query) {
     return api.get('workinghourapi/list', { params: query })
+  },
+  // 接口列表4
+  listByDate: function (query) {
+    return api.get('workinghourapi/listByDate', {
+      params: query
+    })
+  },
+  // 接口列表6
+  delWorkingHour: function (query) {
+    return api.get('workinghourapi/delWorkingHour', {
+      params: query
+    })
   }
 }

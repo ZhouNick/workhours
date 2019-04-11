@@ -1,12 +1,19 @@
 <template>
 <div class='container'>
-  <div class="work-hours-list">工时列表</div>
-  <ul>
-    <li v-for="(item , index) in workingHourList" :key='index'>
-      {{item.createtime}}
-      {{item.workinghour}}
-    </li>
-  </ul>
+  <mt-cell
+        v-for="(item , index) in workingHourList" :key='index'
+        :to="`/workHoursListDetail?uid=${item.uid}`"
+        is-link>
+        <div slot="title" class='workingHourList'>
+          <div>
+          {{ item.createtime_dis }}
+          </div>
+          <div>
+          {{ item.workinghour }}小时
+          </div>
+        </div>
+
+      </mt-cell>
 </div>
 
 </template>
@@ -21,6 +28,7 @@ export default {
     }
   },
   mounted () {
+    document.title = 'xxx工时填报'
     this.fetchData()
   },
   methods: {
@@ -31,3 +39,11 @@ export default {
   }
 }
 </script>
+<style lang='less'>
+  .container{
+    .workingHourList{
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+</style>
