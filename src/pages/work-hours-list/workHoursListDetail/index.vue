@@ -2,16 +2,16 @@
   <div class="container">
     <swipeout>
       <swipeout-item
-        transition-mode="follow"
         v-for="(item , index) in workingHourList"
         :key="index"
+        transition-mode="follow"
       >
         <div slot="right-menu">
-          <swipeout-button @click.native="deleteList(item.id)" type="warn">删除</swipeout-button>
+          <swipeout-button type="warn" @click.native="deleteList(item.id)">删除</swipeout-button>
         </div>
         <div slot="content" class="demo-content vux-1px-t">
           <group>
-            <cell :title="item.name" :value="item.workinghour"></cell>
+            <cell :title="item.name" :value="item.workinghour"/>
           </group>
         </div>
       </swipeout-item>
@@ -19,15 +19,25 @@
     <div class="popup-btn">
       <x-button type="primary" size="large" @click.native="popupVisible = true">新增工时填报</x-button>
     </div>
-    <!-- <mt-popup class='addWork' v-model="popupVisible" position="right"  :modal="false"> -->
-    <!-- <mt-button class='close' @click.native="popupVisible = false" size="large" type="primary">关闭 popup</mt-button> -->
-    <!-- </mt-popup> -->
     <div v-transfer-dom>
-      <popup v-model="popupVisible" height="100%">
-        <div class="popup1">
-          <div class="popup-btn">
-            <x-button type="primary" size="large" @click.native="popupVisible = false">取消</x-button>
-          </div>
+      <popup v-model="popupVisible" >
+        <div class="popup">
+          <group>
+            <selector v-model="listQuery.pid" :options="ProjectList" :value-map="valueMap" title="项目" placeholder="请选择项目"/>
+            <x-number v-model="listQuery.workinghour" :step="0.5" :max="8" :min="0" :fillable="true" title="工时" />
+            <div class="popup-top">
+              <flexbox>
+                <flexbox-item>
+                  <x-button type="primary" @click.native="addWorkingHour">添加</x-button>
+                </flexbox-item>
+                <flexbox-item>
+                  <x-button type="warn" @click.native="popupVisible = false">取消</x-button>
+                </flexbox-item>
+              </flexbox>
+            </div>
+
+          </group>
+
         </div>
       </popup>
     </div>
@@ -44,7 +54,11 @@ import {
   Cell,
   XButton,
   Popup,
-  TransferDom
+  TransferDom,
+  Selector,
+  XNumber,
+  Flexbox,
+  FlexboxItem
 } from 'vux'
 export default {
   name: 'WorkHoursListDetail',
@@ -58,37 +72,59 @@ export default {
     SwipeoutButton,
     Group,
     Cell,
-    XButton
+    XButton,
+    Selector,
+    XNumber,
+    Flexbox,
+    FlexboxItem
   },
-  data () {
+  data() {
     return {
+      valueMap: ['id', 'name'],
       workingHourList: [],
       popupVisible: false,
+      ProjectList: [],
       listQuery: {
-        uid: 1,
-        pid: '',
-        workinghour: '',
+        uid: 0,
+        pid: 0,
+        workinghour: 0,
         createtime: ''
       }
     }
   },
-  mounted () {
+  created() {
+  },
+  mounted() {
     document.title = 'xxx工时填报详情'
+    try {
+      this.listQuery.uid = this.$route.query.uid
+      this.listQuery.createtime = this.$route.query.createtime
+    } catch (error) {
+      console.log(error)
+    }
     this.fetchData()
+    this.Fetchlist()
   },
   methods: {
-    async fetchData () {
-      const list = await api.listByDate({ createtime: '2019-04-11', uid: 1 })
+    resetTemp() {
+      this.listQuery.pid = 0
+      this.listQuery.workinghour = 0
+    },
+    async fetchData() {
+      const list = await api.listByDate({ createtime: this.listQuery.createtime, uid: this.listQuery.uid })
       this.workingHourList = list.data.workingHourList
     },
-    async deleteList (id) {
+    async Fetchlist() {
+      const list = await api.list()
+      this.ProjectList = list.data.projectList
+    },
+    async deleteList(id) {
       const _this = this
       this.$vux.confirm.show({
         title: '提示',
         content: '确定执行删除操作',
         // 组件除show外的属性
-        onCancel () {},
-        async onConfirm () {
+        async onConfirm() {
           const data = await api.delWorkingHour({ id })
           if (data.data.state === 'ok') {
             _this.$vux.toast.show({
@@ -102,6 +138,41 @@ export default {
           }
         }
       })
+    },
+    async addWorkingHour() {
+      const _this = this
+      if (!this.listQuery.uid) {
+        this.$vux.toast.show({
+          text: '找不到 uid 请重新进入'
+        })
+        return
+      }
+      if (!this.listQuery.pid) {
+        this.$vux.toast.show({
+          text: '请选择填报项目'
+        })
+        return
+      }
+      if (!this.listQuery.workinghour) {
+        this.$vux.toast.show({
+          text: '请填写工时'
+        })
+        return
+      }
+      const addWork = await api.addWorkingHour(this.listQuery)
+      if (addWork.data.state === 'ok') {
+        _this.$vux.toast.show({
+          text: '添加成功'
+        })
+        _this.popupVisible = false
+        _this.fetchData()
+        _this.resetTemp()
+      } else {
+        _this.$vux.toast.show({
+          text: '添加失败'
+        })
+      }
+      console.log(addWork)
     }
   }
 }
@@ -126,5 +197,11 @@ export default {
   position: fixed;
   width: 100%;
   bottom: 0;
+}
+.popup-top{
+  margin-top: 20px;
+}
+.weui-cells{
+  margin-top: 0!important
 }
 </style>
