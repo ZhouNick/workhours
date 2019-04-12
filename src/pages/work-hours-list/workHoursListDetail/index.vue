@@ -8,6 +8,7 @@
         transition-mode="follow"
       >
         <div slot="right-menu">
+          <swipeout-button type="primary" @click.native="editList(item)">编辑</swipeout-button>
           <swipeout-button type="warn" @click.native="deleteList(item.id)">删除</swipeout-button>
         </div>
         <div slot="content" class="demo-content vux-1px-t">
@@ -19,7 +20,7 @@
     </swipeout>
     <msg v-else title="暂无数据" description="请新增工时填报" icon="warn"/>
     <div class="popup-btn">
-      <x-button type="primary" size="large" @click.native="popupVisible = true">新增工时填报</x-button>
+      <x-button type="primary" size="large" @click.native="addList">新增工时填报</x-button>
     </div>
     <div v-transfer-dom>
       <popup v-model="popupVisible" >
@@ -91,7 +92,8 @@ export default {
         uid: 0,
         pid: 0,
         workinghour: 0,
-        createtime: ''
+        createtime: '',
+        flag: ''
       }
     }
   },
@@ -142,6 +144,17 @@ export default {
           }
         }
       })
+    },
+    editList(e) {
+      console.log(e)
+      this.popupVisible = true
+      this.listQuery.pid = e.pid
+      this.listQuery.workinghour = e.workinghour
+      this.listQuery.type = 'edit'
+    },
+    addList(e) {
+      this.popupVisible = true
+      this.listQuery.type = 'add'
     },
     async addWorkingHour() {
       const _this = this
