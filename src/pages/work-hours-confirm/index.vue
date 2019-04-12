@@ -5,6 +5,7 @@
         <selector
           :options="projects"
           v-model="projectId"
+          :value-map="['id', 'name']"
           placeholder="请选择项目"
           title="项目"
           @on-change="onChange"/>
@@ -73,31 +74,32 @@ export default {
       })
     },
     getProjectBySuperId() {
-      this.loading = true
       api.getProjectBySuperId({ superintendent: this.superintendent }).then(rsp => {
-        this.loading = true
-        const projects = rsp.data.projectList || []
-        if (projects && projects.length) {
-          this.projectId = projects[0].id
+        if(rsp.data.state === 'ok') {
+          const projects = rsp.data.projectList || []
+          if (projects && projects.length) {
+            this.projectId = projects[0].id
+          }
+          this.projects = projects
+          this.getWorkingHour(this.projectId)
+        } else if (rsp.data.state === 'fail') {
+          this.$vux.toast.show({
+            type: 'warn',
+            text: rsp.data.msg
+          })
         }
-        this.projects = projects
-        this.getWorkingHour(this.projectId)
-      }, error => {
-        this.loading = false
-        this.$vux.toast.show({
-          type: 'warn',
-          text: error.message
-        })
       })
     },
     getWorkingHour(projectId) {
       api.getWorkingHour({ pid: projectId }).then(rsp => {
-        this.userList = rsp.data.userList || []
-      }, error => {
-        this.$vux.toast.show({
-          type: 'warn',
-          text: error.message
-        })
+        if(rsp.data.state === 'ok') {
+          this.userList = rsp.data.userList || []
+        } else if (rsp.data.state === 'fail') {
+          this.$vux.toast.show({
+            type: 'warn',
+            text: rsp.data.msg
+          })
+        }
       })
     }
   }
