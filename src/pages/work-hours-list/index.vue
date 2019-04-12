@@ -1,26 +1,31 @@
 <template>
 <div class='container'>
-  <div class="work-hours-list">工时列表</div>
-  <ul>
-    <li v-for="(item , index) in workingHourList" :key='index'>
-      {{item.createtime}}
-      {{item.workinghour}}
-    </li>
-  </ul>
+
+  <group>
+    <cell  v-for="(item , index) in workingHourList"
+      :key="index" :title="item.createtime_dis" :value="item.workinghour" :link="`/workHoursListDetail?uid=${item.uid}&createtime=${item.createtime}`" is-link></cell>
+  </group>
+
 </div>
 
 </template>
 
 <script>
 import api from '@/api'
+import {Group, Cell} from 'vux'
 export default {
   name: 'work-hours-list',
+  components: {
+    Group,
+    Cell
+  },
   data () {
     return {
       workingHourList: []
     }
   },
   mounted () {
+    document.title = 'xxx工时填报'
     this.fetchData()
   },
   methods: {
@@ -31,3 +36,11 @@ export default {
   }
 }
 </script>
+<style lang='less'>
+  .container{
+    .workingHourList{
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+</style>
