@@ -1,10 +1,10 @@
 <template>
   <div class="page-login">
     <div class="login-warp">
-      <figure class="logo"></figure>
+      <figure class="logo"/>
       <group>
-        <x-input title="帐号" type="tel" is-type="china-mobile" v-model="query.telephone"></x-input>
-        <x-input title="密码" type="password" v-model="query.pwd"></x-input>
+        <x-input v-model="query.telephone" title="帐号" type="tel" is-type="china-mobile"/>
+        <x-input v-model="query.pwd" title="密码" type="password"/>
       </group>
       <div class="login-btn">
         <x-button type="primary" @click.native="login">登录</x-button>
@@ -17,13 +17,13 @@
 import { Group, XInput, XButton } from 'vux'
 import api from '@/api'
 export default {
-  name: 'login',
+  name: 'Login',
   components: {
     Group,
     XInput,
     XButton
   },
-  data () {
+  data() {
     return {
       query: {
         telephone: '',
@@ -31,10 +31,10 @@ export default {
       }
     }
   },
-  created () {
+  created() {
   },
   methods: {
-    login () {
+    login() {
       if (!this.query.telephone) {
         this.$vux.toast.show({
           type: 'warn',
@@ -49,7 +49,7 @@ export default {
         return
       }
       api.login(this.query).then(rsp => {
-        let user = rsp.data.user
+        const user = rsp.data.user
         localStorage && localStorage.setItem('user', JSON.stringify(user))
         this.$router.push('/')
       }, error => {

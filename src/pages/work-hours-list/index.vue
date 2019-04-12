@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-
     <group>
       <cell
         v-for="(item , index) in workingHourList"
@@ -10,7 +9,7 @@
         :link="`/workHoursListDetail?uid=${item.uid}&createtime=${item.createtime}`"
         is-link/>
     </group>
-    <div class="popup-btn">
+    <div v-if="user.project===1" class="popup-btn">
       <x-button :link="`/work-hours-confirm?superintendent=${user.id}`" type="primary" size="large">工时确认</x-button>
     </div>
   </div>
@@ -34,13 +33,19 @@ export default {
     }
   },
   mounted() {
-    document.title = 'xxx工时填报'
-    this.fetchData()
+    try {
+      this.user = JSON.parse(localStorage.getItem('user'))
+      console.log(this.user)
+      document.title = `${this.user.name}工时填报`
+      this.fetchData()
+    } catch (error) {
+      console.log(error)
+    }
   },
   methods: {
     fetchData() {
       var _this = this
-      api.workinghourapi({ uid: 1 }).then(list => {
+      api.workinghourapi({ uid: this.user.id }).then(list => {
         _this.workingHourList = list.data.workingHourList
       })
     }
@@ -58,5 +63,8 @@ export default {
   position: fixed;
   width: 100%;
   bottom: 0;
+}
+.weui-cells{
+  margin-top:0!important;
 }
 </style>

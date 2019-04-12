@@ -34,7 +34,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  let user = localStorage && localStorage.getItem('user')
+  const user = localStorage && localStorage.getItem('user')
   if (user) {
     next()
   } else {

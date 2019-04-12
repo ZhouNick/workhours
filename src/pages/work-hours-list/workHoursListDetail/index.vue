@@ -1,6 +1,7 @@
 <template>
+
   <div class="container">
-    <swipeout>
+    <swipeout v-if="workingHourList.length" >
       <swipeout-item
         v-for="(item , index) in workingHourList"
         :key="index"
@@ -16,6 +17,7 @@
         </div>
       </swipeout-item>
     </swipeout>
+    <msg v-else title="暂无数据" description="请新增工时填报" icon="warn"/>
     <div class="popup-btn">
       <x-button type="primary" size="large" @click.native="popupVisible = true">新增工时填报</x-button>
     </div>
@@ -35,9 +37,7 @@
                 </flexbox-item>
               </flexbox>
             </div>
-
           </group>
-
         </div>
       </popup>
     </div>
@@ -47,6 +47,7 @@
 <script>
 import api from '@/api'
 import {
+  Msg,
   Swipeout,
   SwipeoutItem,
   SwipeoutButton,
@@ -66,6 +67,7 @@ export default {
     TransferDom
   },
   components: {
+    Msg,
     Popup,
     Swipeout,
     SwipeoutItem,
@@ -80,8 +82,9 @@ export default {
   },
   data() {
     return {
+      user: {},
       valueMap: ['id', 'name'],
-      workingHourList: [],
+      workingHourList: [{ name: 'placeholder' }],
       popupVisible: false,
       ProjectList: [],
       listQuery: {
@@ -95,10 +98,11 @@ export default {
   created() {
   },
   mounted() {
-    document.title = 'xxx工时填报详情'
     try {
       this.listQuery.uid = this.$route.query.uid
       this.listQuery.createtime = this.$route.query.createtime
+      this.user = JSON.parse(localStorage.getItem('user'))
+      document.title = `${this.user.name}工时填报详情`
     } catch (error) {
       console.log(error)
     }
