@@ -36,10 +36,22 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   let user = localStorage && localStorage.getItem('user')
   if (user) {
-    next()
+    if (to.name === 'login') {
+      next({
+        path: '/'
+      })
+    } else {
+      next()
+    }
   } else {
     if (to.name === 'login') {
-      next()
+      if (user) {
+        next({
+          path: '/'
+        })
+      } else {
+        next()
+      }
     } else {
       next({
         path: '/login'
