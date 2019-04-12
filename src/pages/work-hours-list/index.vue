@@ -26,13 +26,13 @@ export default {
     Cell,
     XButton
   },
-  data() {
+  data () {
     return {
       user: {},
       workingHourList: []
     }
   },
-  mounted() {
+  mounted () {
     try {
       this.user = JSON.parse(localStorage.getItem('user'))
       console.log(this.user)
@@ -43,7 +43,7 @@ export default {
     }
   },
   methods: {
-    fetchData() {
+    fetchData () {
       var _this = this
       api.workinghourapi({ uid: this.user.id }).then(list => {
         _this.workingHourList = list.data.workingHourList

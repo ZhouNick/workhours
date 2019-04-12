@@ -81,11 +81,11 @@ export default {
     Flexbox,
     FlexboxItem
   },
-  data() {
+  data () {
     return {
       user: {},
       valueMap: ['id', 'name'],
-      workingHourList: [{ name: 'placeholder' }],
+      workingHourList: [{ name: '' }],
       popupVisible: false,
       ProjectList: [],
       listQuery: {
@@ -97,9 +97,9 @@ export default {
       }
     }
   },
-  created() {
+  created () {
   },
-  mounted() {
+  mounted () {
     try {
       this.listQuery.uid = this.$route.query.uid
       this.listQuery.createtime = this.$route.query.createtime
@@ -112,25 +112,25 @@ export default {
     this.Fetchlist()
   },
   methods: {
-    resetTemp() {
+    resetTemp () {
       this.listQuery.pid = 0
       this.listQuery.workinghour = 0
     },
-    async fetchData() {
+    async fetchData () {
       const list = await api.listByDate({ createtime: this.listQuery.createtime, uid: this.listQuery.uid })
       this.workingHourList = list.data.workingHourList
     },
-    async Fetchlist() {
+    async Fetchlist () {
       const list = await api.list()
       this.ProjectList = list.data.projectList
     },
-    async deleteList(id) {
+    async deleteList (id) {
       const _this = this
       this.$vux.confirm.show({
         title: '提示',
         content: '确定执行删除操作',
         // 组件除show外的属性
-        async onConfirm() {
+        async onConfirm () {
           const data = await api.delWorkingHour({ id })
           if (data.data.state === 'ok') {
             _this.$vux.toast.show({
@@ -145,18 +145,18 @@ export default {
         }
       })
     },
-    editList(e) {
+    editList (e) {
       console.log(e)
       this.popupVisible = true
       this.listQuery.pid = e.pid
       this.listQuery.workinghour = e.workinghour
       this.listQuery.type = 'edit'
     },
-    addList(e) {
+    addList (e) {
       this.popupVisible = true
       this.listQuery.type = 'add'
     },
-    async addWorkingHour() {
+    async addWorkingHour () {
       const _this = this
       if (!this.listQuery.uid) {
         this.$vux.toast.show({
