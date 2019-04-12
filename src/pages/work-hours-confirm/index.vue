@@ -33,6 +33,9 @@
         </x-table>
       </div>
       <msg v-else title="暂无数据" icon="warn"/>
+      <div class="btn-wrap" v-if="userList.length">
+        <x-button type="primary" @click.native="confirmWorkHour">确认无误</x-button>
+      </div>
     </div>
     <msg v-else title="暂无项目" icon="warn"/>
   </div>
@@ -50,7 +53,7 @@ export default {
     XButton,
     XTable
   },
-  data() {
+  data () {
     return {
       loading: false,
       superintendent: this.$route.query.superintendent || '',
@@ -59,23 +62,23 @@ export default {
       userList: [{ name: '' }]
     }
   },
-  created() {
+  created () {
     this.getProjectBySuperId()
   },
   methods: {
-    onChange(val) {
+    onChange (val) {
       this.projectId = val
       this.getWorkingHour(val)
     },
-    viewWorkHoursListDetail(item) {
+    viewWorkHoursListDetail (item) {
       this.$router.push({
         path: 'workHoursListDetail',
         query: { uid: item.uid, createtime: item.createtime }
       })
     },
-    getProjectBySuperId() {
+    getProjectBySuperId () {
       api.getProjectBySuperId({ superintendent: this.superintendent }).then(rsp => {
-        if(rsp.data.state === 'ok') {
+        if (rsp.data.state === 'ok') {
           const projects = rsp.data.projectList || []
           if (projects && projects.length) {
             this.projectId = projects[0].id
@@ -90,10 +93,25 @@ export default {
         }
       })
     },
-    getWorkingHour(projectId) {
+    getWorkingHour (projectId) {
       api.getWorkingHour({ pid: projectId }).then(rsp => {
-        if(rsp.data.state === 'ok') {
+        if (rsp.data.state === 'ok') {
           this.userList = rsp.data.userList || []
+        } else if (rsp.data.state === 'fail') {
+          this.$vux.toast.show({
+            type: 'warn',
+            text: rsp.data.msg
+          })
+        }
+      })
+    },
+    confirmWorkHour () {
+      api.confirmWorkHour({pid: this.projectId}).then(rsp => {
+        if (rsp.data.state === 'ok') {
+          this.$vux.toast.show({
+            type: 'success',
+            text: '复核成功'
+          })
         } else if (rsp.data.state === 'fail') {
           this.$vux.toast.show({
             type: 'warn',

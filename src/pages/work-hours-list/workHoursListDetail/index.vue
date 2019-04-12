@@ -128,7 +128,7 @@ export default {
         title: '提示',
         content: '确定执行删除操作',
         // 组件除show外的属性
-        async onConfirm() {
+        async onConfirm () {
           const data = await api.delWorkingHour({ id })
           if (data.data.state === 'ok') {
             _this.$vux.toast.show({

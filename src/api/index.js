@@ -8,44 +8,48 @@ const api = axios.create({
 })
 
 export default {
-  login: function(query) {
+  login: function (query) {
     return api.get('userapi/login', { params: query })
   },
-  loadProjects: function() {
+  loadProjects: function () {
     return api.get('projectapi/list')
   },
   // 接口列表3
-  workinghourapi: function(query) {
+  workinghourapi: function (query) {
     return api.get('workinghourapi/list', { params: query })
   },
   // 接口列表4
-  listByDate: function(query) {
+  listByDate: function (query) {
     return api.get('workinghourapi/listByDate', {
       params: query
     })
   },
   // 接口列表6
-  delWorkingHour: function(query) {
+  delWorkingHour: function (query) {
     return api.get('workinghourapi/delWorkingHour', {
       params: query
     })
   },
   // 接口列表2
-  list: function(query) {
+  list: function (query) {
     return api.get('projectapi/list')
   },
   // 接口列表2
-  addWorkingHour: function(query) {
+  addWorkingHour: function (query) {
     return api.get('workinghourapi/addWorkingHour', {
       params: query
     })
   },
   // 接口7
-  getProjectBySuperId: function(query) {
+  getProjectBySuperId: function (query) {
     return api.get('projectapi/getProjectBySuperId', { params: query })
   },
   // 接口列表8
-  getWorkingHour: function(query) {
+  getWorkingHour: function (query) {
     return api.get('workinghourapi/getWorkingHourByProjectId', { params: query })
+  },
+  // 接口列表8
+  confirmWorkHour: function (query) {
+    return api.get('workinghourapi/commitWorkingHour', { params: query })
   }
 }

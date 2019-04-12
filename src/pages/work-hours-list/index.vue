@@ -63,6 +63,9 @@ export default {
   position: fixed;
   width: 100%;
   bottom: 0;
+  .weui-btn{
+    border-radius: 0;
+  }
 }
 .weui-cells{
   margin-top:0!important;
