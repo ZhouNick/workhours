@@ -29,5 +29,13 @@ export default {
     return api.get('workinghourapi/delWorkingHour', {
       params: query
     })
+  },
+  // 接口7
+  getProjectBySuperId: function (query) {
+    return api.get('projectapi/getProjectBySuperId', { params: query })
+  },
+  // 接口列表8
+  getWorkingHour: function (query) {
+    return api.get('workinghourapi/getWorkingHourByProjectId', { params: query })
   }
 }

@@ -8,6 +8,9 @@ import {
   ToastPlugin
 } from 'vux'
 
+const FastClick = require('fastclick')
+FastClick.attach(document.body)
+
 Vue.config.productionTip = false
 Vue.use(ConfirmPlugin)
 Vue.use(ToastPlugin)
