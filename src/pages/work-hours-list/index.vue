@@ -1,27 +1,24 @@
 <template>
 <div class='container'>
-  <mt-cell
-        v-for="(item , index) in workingHourList" :key='index'
-        :to="`/workHoursListDetail?uid=${item.uid}`"
-        is-link>
-        <div slot="title" class='workingHourList'>
-          <div>
-          {{ item.createtime_dis }}
-          </div>
-          <div>
-          {{ item.workinghour }}小时
-          </div>
-        </div>
 
-      </mt-cell>
+  <group>
+    <cell  v-for="(item , index) in workingHourList"
+      :key="index" :title="item.createtime_dis" :value="item.workinghour" :link="`/workHoursListDetail?uid=${item.uid}&createtime=${item.createtime}`" is-link></cell>
+  </group>
+
 </div>
 
 </template>
 
 <script>
 import api from '@/api'
+import {Group, Cell} from 'vux'
 export default {
   name: 'work-hours-list',
+  components: {
+    Group,
+    Cell
+  },
   data () {
     return {
       workingHourList: []
