@@ -80,11 +80,11 @@ export default {
     Flexbox,
     FlexboxItem
   },
-  data() {
+  data () {
     return {
       user: {},
       valueMap: ['id', 'name'],
-      workingHourList: [{ name: 'placeholder' }],
+      workingHourList: [{ name: '' }],
       popupVisible: false,
       ProjectList: [],
       listQuery: {
@@ -95,9 +95,9 @@ export default {
       }
     }
   },
-  created() {
+  created () {
   },
-  mounted() {
+  mounted () {
     try {
       this.listQuery.uid = this.$route.query.uid
       this.listQuery.createtime = this.$route.query.createtime
@@ -110,19 +110,19 @@ export default {
     this.Fetchlist()
   },
   methods: {
-    resetTemp() {
+    resetTemp () {
       this.listQuery.pid = 0
       this.listQuery.workinghour = 0
     },
-    async fetchData() {
+    async fetchData () {
       const list = await api.listByDate({ createtime: this.listQuery.createtime, uid: this.listQuery.uid })
       this.workingHourList = list.data.workingHourList
     },
-    async Fetchlist() {
+    async Fetchlist () {
       const list = await api.list()
       this.ProjectList = list.data.projectList
     },
-    async deleteList(id) {
+    async deleteList (id) {
       const _this = this
       this.$vux.confirm.show({
         title: '提示',
@@ -143,7 +143,7 @@ export default {
         }
       })
     },
-    async addWorkingHour() {
+    async addWorkingHour () {
       const _this = this
       if (!this.listQuery.uid) {
         this.$vux.toast.show({
