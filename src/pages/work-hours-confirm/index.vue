@@ -1,8 +1,12 @@
 <template>
   <div class="page-work-hours-confirm">
     <group>
-      <selector placeholder="请选择项目" title="项目"
-        :options="projects" v-model="projectId" @on-change="onChange"></selector>
+      <selector
+        :options="projects"
+        v-model="projectId"
+        placeholder="请选择项目"
+        title="项目"
+        @on-change="onChange"/>
     </group>
     <div class="table">
       <x-table>
@@ -20,8 +24,8 @@
         </thead>
         <tbody>
           <tr v-for="t in userList" :key="t.name">
-            <td>{{t.name}}</td>
-            <td v-for="(w, index) in t.workhourlist" :key="index" @click="viewWorkHoursListDetail(w)">{{w.workinghour}}</td>
+            <td>{{ t.name }}</td>
+            <td v-for="(w, index) in t.workhourlist" :key="index" @click="viewWorkHoursListDetail(w)">{{ w.workinghour }}</td>
           </tr>
         </tbody>
       </x-table>
@@ -33,14 +37,14 @@
 import { Group, Selector, XButton, XTable } from 'vux'
 import api from '@/api'
 export default {
-  name: 'work-hours-confirm',
+  name: 'WorkHoursConfirm',
   components: {
     Group,
     Selector,
     XButton,
     XTable
   },
-  data () {
+  data() {
     return {
       superintendent: this.$route.query.superintendent || '',
       projectId: '',
@@ -48,24 +52,24 @@ export default {
       userList: []
     }
   },
-  created () {
+  created() {
     this.getProjectBySuperId()
   },
   methods: {
-    onChange (val) {
+    onChange(val) {
       this.projectId = val
       this.getWorkingHour(val)
     },
-    viewWorkHoursListDetail (item) {
+    viewWorkHoursListDetail(item) {
       this.$router.push({
         path: 'workHoursListDetail',
         query: { uid: item.uid, createtime: item.createtime }
       })
     },
-    getProjectBySuperId () {
-      api.getProjectBySuperId({superintendent: this.superintendent}).then(rsp => {
+    getProjectBySuperId() {
+      api.getProjectBySuperId({ superintendent: this.superintendent }).then(rsp => {
         console.log(rsp)
-        let projects = rsp.data.projects || []
+        const projects = rsp.data.projects || []
         if (projects && projects.length) {
           this.projectId = projects[0].id
         }
@@ -78,8 +82,8 @@ export default {
         })
       })
     },
-    getWorkingHour (projectId) {
-      api.getWorkingHour({pid: projectId}).then(rsp => {
+    getWorkingHour(projectId) {
+      api.getWorkingHour({ pid: projectId }).then(rsp => {
         this.userList = rsp.data.userList || []
       }, error => {
         this.$vux.toast.show({
