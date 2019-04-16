@@ -26,12 +26,13 @@
       <popup v-model="popupVisible" >
         <div class="popup">
           <group>
-            <selector v-model="listQuery.pid" :options="ProjectList" :value-map="valueMap" title="项目" placeholder="请选择项目"/>
+            <selector :readonly='editType' v-model="listQuery.pid" :options="ProjectList" :value-map="valueMap" title="项目" placeholder="请选择项目"/>
             <x-number v-model="listQuery.workinghour" :step="0.5" :max="8" :min="0" :fillable="true" title="工时" />
             <div class="popup-top">
               <flexbox>
                 <flexbox-item>
-                  <x-button type="primary" @click.native="addWorkingHour">添加</x-button>
+                  <x-button v-if='editType' type="primary" @click.native="addWorkingHour">修改</x-button>
+                  <x-button v-else type="primary" @click.native="addWorkingHour">添加</x-button>
                 </flexbox-item>
                 <flexbox-item>
                   <x-button type="warn" @click.native="popupVisible = false">取消</x-button>
@@ -93,8 +94,9 @@ export default {
         pid: 0,
         workinghour: 0,
         createtime: '',
-        flag: ''
-      }
+      },
+      editId:0,
+      editType:false
     }
   },
   created () {
@@ -150,15 +152,35 @@ export default {
       this.popupVisible = true
       this.listQuery.pid = e.pid
       this.listQuery.workinghour = e.workinghour
-      this.listQuery.type = 'edit'
+      this.editId = e.id
+      this.editType = true
     },
     addList (e) {
       this.popupVisible = true
-      this.listQuery.type = 'add'
+      this.editType = false
     },
     async addWorkingHour () {
       const _this = this
-      if (!this.listQuery.uid) {
+      let addWork = null
+      if (this.editType) {
+        if (!this.listQuery.pid) {
+        this.$vux.toast.show({
+          text: '请选择填报项目'
+        })
+        return
+      }
+      if (!this.listQuery.workinghour) {
+        this.$vux.toast.show({
+          text: '请填写工时'
+        })
+        return
+      }
+        addWork = await api.editWorkingHour({
+          id:this.editId,
+          workinghour:this.listQuery.workinghour
+        })
+      }else{
+        if (!this.listQuery.uid) {
         this.$vux.toast.show({
           text: '找不到 uid 请重新进入'
         })
@@ -176,17 +198,18 @@ export default {
         })
         return
       }
-      const addWork = await api.addWorkingHour(this.listQuery)
+        addWork = await api.addWorkingHour(this.listQuery)
+      }
       if (addWork.data.state === 'ok') {
         _this.$vux.toast.show({
-          text: '添加成功'
+          text: '成功'
         })
         _this.popupVisible = false
         _this.fetchData()
         _this.resetTemp()
       } else {
         _this.$vux.toast.show({
-          text: '添加失败'
+          text: '失败'
         })
       }
       console.log(addWork)

@@ -39,6 +39,11 @@ export default {
     return api.get('workinghourapi/addWorkingHour', {
       params: query
     })
+  }, 
+  editWorkingHour: function(query) {
+    return api.get('workinghourapi/editWorkingHour', {
+      params: query
+    })
   },
   // 接口7
   getProjectBySuperId: function (query) {
