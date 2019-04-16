@@ -9,8 +9,9 @@
         :link="`/workHoursListDetail?uid=${item.uid}&createtime=${item.createtime}`"
         is-link/>
     </group>
-    <div v-if="user.project===1" class="popup-btn">
-      <x-button :link="`/work-hours-confirm?superintendent=${user.id}`" type="primary" size="large">工时确认</x-button>
+    <div class="popup-btn">
+      <x-button :link="`/work-hours-confirm?superintendent=${user.id}`" type="primary" size="large" v-if="user.project===1" >项目工时</x-button>
+      <x-button :link="`/work-hours-confirm?superintendent=${user.id}`" type="primary" size="large" v-if="user.project===2" >项目工时(周五确认)</x-button>
     </div>
   </div>
 
@@ -35,7 +36,6 @@ export default {
   mounted () {
     try {
       this.user = JSON.parse(localStorage.getItem('user'))
-      console.log(this.user)
       document.title = `${this.user.name}工时填报`
       this.fetchData()
     } catch (error) {

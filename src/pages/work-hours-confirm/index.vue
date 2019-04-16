@@ -1,6 +1,6 @@
 <template>
   <div class="page-work-hours-confirm">
-    <div class="work-hours-wrap" v-if="projects.length">
+    <div v-if="projects.length" class="work-hours-wrap">
       <group>
         <selector
           :options="projects"
@@ -10,7 +10,7 @@
           title="项目"
           @on-change="onChange"/>
       </group>
-      <div class="table" v-if="userList.length">
+      <div v-if="userList.length" class="table">
         <x-table>
           <thead>
             <tr>
@@ -33,8 +33,9 @@
         </x-table>
       </div>
       <msg v-else title="暂无数据" icon="warn"/>
-      <div class="btn-wrap" v-if="userList.length">
+      <div v-if="userList.length" class="btn-wrap">
         <x-button type="primary" @click.native="confirmWorkHour">确认无误</x-button>
+        <router-link to="/" class="weui-btn weui-btn_primary">返回</router-link>
       </div>
     </div>
     <msg v-else title="暂无项目" icon="warn"/>
@@ -73,7 +74,7 @@ export default {
     viewWorkHoursListDetail (item) {
       this.$router.push({
         path: 'workHoursListDetail',
-        query: { uid: item.uid, createtime: item.createtime }
+        query: { uid: item.uid, createtime: item.createtime, pid: this.projectId }
       })
     },
     getProjectBySuperId () {
@@ -106,7 +107,7 @@ export default {
       })
     },
     confirmWorkHour () {
-      api.confirmWorkHour({pid: this.projectId}).then(rsp => {
+      api.confirmWorkHour({ pid: this.projectId }).then(rsp => {
         if (rsp.data.state === 'ok') {
           this.$vux.toast.show({
             type: 'success',
