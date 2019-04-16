@@ -35,7 +35,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   const user = localStorage && localStorage.getItem('user')
-  if (user) {
+  if (JSON.parse(user)) {
     if (to.name === 'login') {
       next({
         path: '/'

@@ -23,7 +23,7 @@ export default {
     XInput,
     XButton
   },
-  data() {
+  data () {
     return {
       query: {
         telephone: '',
@@ -31,10 +31,10 @@ export default {
       }
     }
   },
-  created() {
+  created () {
   },
   methods: {
-    login() {
+    login () {
       if (!this.query.telephone) {
         this.$vux.toast.show({
           type: 'warn',
@@ -49,14 +49,16 @@ export default {
         return
       }
       api.login(this.query).then(rsp => {
-        const user = rsp.data.user
-        localStorage && localStorage.setItem('user', JSON.stringify(user))
-        this.$router.push('/')
-      }, error => {
-        this.$vux.toast.show({
-          type: 'warn',
-          text: error.message
-        })
+        if (rsp.data.state === 'ok') {
+          const user = rsp.data.user
+          localStorage && localStorage.setItem('user', JSON.stringify(user))
+          this.$router.push('/')
+        } else if (rsp.data.state === 'fail') {
+          this.$vux.toast.show({
+            type: 'warn',
+            text: rsp.data.msg
+          })
+        }
       })
     }
   }
