@@ -1,12 +1,12 @@
 <template>
 
   <div class="container">
+    <popup-header :title="listQuery.createtime + listQuery.createtime_dis" left-text="返回" @on-click-left="routerBack" />
     <swipeout v-if="workingHourList.length" >
       <swipeout-item
         v-for="(item , index) in workingHourList"
         :key="index"
-        transition-mode="follow"
-      >
+        transition-mode="follow">
         <div slot="right-menu">
           <swipeout-button type="primary" @click.native="editList(item)">编辑</swipeout-button>
           <swipeout-button type="warn" @click.native="deleteList(item.id)">删除</swipeout-button>
@@ -26,12 +26,12 @@
       <popup v-model="popupVisible" >
         <div class="popup">
           <group>
-            <selector :readonly='editType' v-model="listQuery.pid" :options="ProjectList" :value-map="valueMap" title="项目" placeholder="请选择项目"/>
+            <selector :readonly="editType" v-model="listQuery.pid" :options="ProjectList" :value-map="valueMap" title="项目" placeholder="请选择项目"/>
             <x-number v-model="listQuery.workinghour" :step="0.5" :max="8" :min="0" :fillable="true" title="工时" />
             <div class="popup-top">
               <flexbox>
                 <flexbox-item>
-                  <x-button v-if='editType' type="primary" @click.native="addWorkingHour">修改</x-button>
+                  <x-button v-if="editType" type="primary" @click.native="addWorkingHour">修改</x-button>
                   <x-button v-else type="primary" @click.native="addWorkingHour">添加</x-button>
                 </flexbox-item>
                 <flexbox-item>
@@ -61,7 +61,8 @@ import {
   Selector,
   XNumber,
   Flexbox,
-  FlexboxItem
+  FlexboxItem,
+  PopupHeader
 } from 'vux'
 export default {
   name: 'WorkHoursListDetail',
@@ -80,7 +81,8 @@ export default {
     Selector,
     XNumber,
     Flexbox,
-    FlexboxItem
+    FlexboxItem,
+    PopupHeader
   },
   data () {
     return {
@@ -94,9 +96,10 @@ export default {
         pid: 0,
         workinghour: 0,
         createtime: '',
+        createtime_dis: ''
       },
-      editId:0,
-      editType:false
+      editId: 0,
+      editType: false
     }
   },
   created () {
@@ -105,6 +108,7 @@ export default {
     try {
       this.listQuery.uid = this.$route.query.uid
       this.listQuery.createtime = this.$route.query.createtime
+      this.listQuery.createtime_dis = this.$route.query.createtime_dis
       this.user = JSON.parse(localStorage.getItem('user'))
       document.title = `${this.user.name}工时填报详情`
     } catch (error) {
@@ -114,6 +118,9 @@ export default {
     this.Fetchlist()
   },
   methods: {
+    routerBack () {
+      this.$router.push('/')
+    },
     resetTemp () {
       this.listQuery.pid = 0
       this.listQuery.workinghour = 0
@@ -148,7 +155,6 @@ export default {
       })
     },
     editList (e) {
-      console.log(e)
       this.popupVisible = true
       this.listQuery.pid = e.pid
       this.listQuery.workinghour = e.workinghour
@@ -164,40 +170,40 @@ export default {
       let addWork = null
       if (this.editType) {
         if (!this.listQuery.pid) {
-        this.$vux.toast.show({
-          text: '请选择填报项目'
-        })
-        return
-      }
-      if (!this.listQuery.workinghour) {
-        this.$vux.toast.show({
-          text: '请填写工时'
-        })
-        return
-      }
+          this.$vux.toast.show({
+            text: '请选择填报项目'
+          })
+          return
+        }
+        if (!this.listQuery.workinghour) {
+          this.$vux.toast.show({
+            text: '请填写工时'
+          })
+          return
+        }
         addWork = await api.editWorkingHour({
-          id:this.editId,
-          workinghour:this.listQuery.workinghour
+          id: this.editId,
+          workinghour: this.listQuery.workinghour
         })
-      }else{
+      } else {
         if (!this.listQuery.uid) {
-        this.$vux.toast.show({
-          text: '找不到 uid 请重新进入'
-        })
-        return
-      }
-      if (!this.listQuery.pid) {
-        this.$vux.toast.show({
-          text: '请选择填报项目'
-        })
-        return
-      }
-      if (!this.listQuery.workinghour) {
-        this.$vux.toast.show({
-          text: '请填写工时'
-        })
-        return
-      }
+          this.$vux.toast.show({
+            text: '找不到 uid 请重新进入'
+          })
+          return
+        }
+        if (!this.listQuery.pid) {
+          this.$vux.toast.show({
+            text: '请选择填报项目'
+          })
+          return
+        }
+        if (!this.listQuery.workinghour) {
+          this.$vux.toast.show({
+            text: '请填写工时'
+          })
+          return
+        }
         addWork = await api.addWorkingHour(this.listQuery)
       }
       if (addWork.data.state === 'ok') {

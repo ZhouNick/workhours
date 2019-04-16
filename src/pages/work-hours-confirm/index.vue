@@ -1,5 +1,6 @@
 <template>
-  <div class="page-work-hours-confirm">
+  <div class="page-work-hours-confirm container">
+    <popup-header title="项目工时确认" left-text="返回" @on-click-left="routerBack" />
     <div v-if="projects.length" class="work-hours-wrap">
       <group>
         <selector
@@ -35,7 +36,6 @@
       <msg v-else title="暂无数据" icon="warn"/>
       <div v-if="userList.length" class="btn-wrap">
         <x-button type="primary" @click.native="confirmWorkHour">确认无误</x-button>
-        <router-link to="/" class="weui-btn weui-btn_primary">返回</router-link>
       </div>
     </div>
     <msg v-else title="暂无项目" icon="warn"/>
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { Msg, Group, Selector, XButton, XTable } from 'vux'
+import { Msg, Group, Selector, XButton, XTable, PopupHeader } from 'vux'
 import api from '@/api'
 export default {
   name: 'WorkHoursConfirm',
@@ -52,7 +52,8 @@ export default {
     Group,
     Selector,
     XButton,
-    XTable
+    XTable,
+    PopupHeader
   },
   data () {
     return {
@@ -67,6 +68,9 @@ export default {
     this.getProjectBySuperId()
   },
   methods: {
+    routerBack () {
+      this.$router.push('/')
+    },
     onChange (val) {
       this.projectId = val
       this.getWorkingHour(val)

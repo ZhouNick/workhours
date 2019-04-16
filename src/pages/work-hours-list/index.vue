@@ -6,12 +6,12 @@
         :key="index"
         :title="item.createtime_dis"
         :value="item.workinghour"
-        :link="`/workHoursListDetail?uid=${item.uid}&createtime=${item.createtime}`"
+        :link="`/workHoursListDetail?uid=${item.uid}&createtime=${item.createtime}&createtime_dis=${item.createtime_dis}`"
         is-link/>
     </group>
     <div class="popup-btn">
-      <x-button :link="`/work-hours-confirm?superintendent=${user.id}`" type="primary" size="large" v-if="user.project===1" >项目工时</x-button>
-      <x-button :link="`/work-hours-confirm?superintendent=${user.id}`" type="primary" size="large" v-if="user.project===2" >项目工时(周五确认)</x-button>
+      <x-button v-if="user.project===1" :link="`/work-hours-confirm?superintendent=${user.id}`" type="primary" size="large">项目工时</x-button>
+      <x-button v-if="user.project===2" type="primary" size="large" disabled>项目工时(周五确认)</x-button>
     </div>
   </div>
 
