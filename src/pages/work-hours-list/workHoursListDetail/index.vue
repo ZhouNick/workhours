@@ -1,8 +1,8 @@
 <template>
 
   <div class="container">
-    <popup-header :title="listQuery.createtime + listQuery.createtime_dis" left-text="返回" @on-click-left="routerBack" />
-    <swipeout v-if="workingHourList.length" >
+    <popup-header :title="listQuery.createtime_dis" left-text="返回" @on-click-left="routerBack" />
+    <swipeout v-if="workingHourList.length">
       <swipeout-item
         v-for="(item , index) in workingHourList"
         :key="index"
@@ -19,14 +19,14 @@
       </swipeout-item>
     </swipeout>
     <msg v-else title="暂无数据" description="请新增工时填报" icon="warn"/>
-    <div class="popup-btn">
+    <div v-if="!$route.query.enable || ($route.query.enable && !workingHourList.length)" class="popup-btn">
       <x-button type="primary" size="large" @click.native="addList">新增工时填报</x-button>
     </div>
     <div v-transfer-dom>
       <popup v-model="popupVisible" >
         <div class="popup">
           <group>
-            <selector :readonly="editType" v-model="listQuery.pid" :options="ProjectList" :value-map="valueMap" title="项目" placeholder="请选择项目"/>
+            <selector :readonly="enable" v-model="listQuery.pid" :options="ProjectList" :value-map="valueMap" title="项目" placeholder="请选择项目"/>
             <x-number v-model="listQuery.workinghour" :step="0.5" :max="8" :min="0" :fillable="true" title="工时" />
             <div class="popup-top">
               <flexbox>
@@ -99,7 +99,9 @@ export default {
         createtime_dis: ''
       },
       editId: 0,
-      editType: false
+      editType: false,
+      enable: false,
+      enableHidden: this.$route.query.enableHidden || true
     }
   },
   created () {
@@ -115,21 +117,35 @@ export default {
       console.log(error)
     }
     this.fetchData()
-    this.Fetchlist()
+    this.fetchlist()
   },
   methods: {
     routerBack () {
-      this.$router.push('/')
+      if (this.$route.query.enable) {
+        this.$router.push({
+          path: 'work-hours-confirm',
+          query: { superintendent: this.$route.query.superintendent, pid: this.$route.query.pid }
+        })
+      } else {
+        history.back()
+      }
     },
     resetTemp () {
       this.listQuery.pid = 0
       this.listQuery.workinghour = 0
     },
     async fetchData () {
-      const list = await api.listByDate({ createtime: this.listQuery.createtime, uid: this.listQuery.uid })
+      const query = {
+        createtime: this.listQuery.createtime,
+        uid: this.listQuery.uid
+      }
+      if (this.$route.query.enable) {
+        query.pid = this.$route.query.pid
+      }
+      const list = await api.listByDate(query)
       this.workingHourList = list.data.workingHourList
     },
-    async Fetchlist () {
+    async fetchlist () {
       const list = await api.list()
       this.ProjectList = list.data.projectList
     },
@@ -160,9 +176,15 @@ export default {
       this.listQuery.workinghour = e.workinghour
       this.editId = e.id
       this.editType = true
+      this.enable = true
     },
     addList (e) {
       this.popupVisible = true
+      this.listQuery.workinghour = 0
+      if (this.$route.query.enable) {
+        this.listQuery.pid = this.$route.query.pid
+        this.enable = true
+      }
       this.editType = false
     },
     async addWorkingHour () {
@@ -171,12 +193,14 @@ export default {
       if (this.editType) {
         if (!this.listQuery.pid) {
           this.$vux.toast.show({
+            type: 'warn',
             text: '请选择填报项目'
           })
           return
         }
         if (!this.listQuery.workinghour) {
           this.$vux.toast.show({
+            type: 'warn',
             text: '请填写工时'
           })
           return
@@ -188,18 +212,21 @@ export default {
       } else {
         if (!this.listQuery.uid) {
           this.$vux.toast.show({
+            type: 'warn',
             text: '找不到 uid 请重新进入'
           })
           return
         }
         if (!this.listQuery.pid) {
           this.$vux.toast.show({
+            type: 'warn',
             text: '请选择填报项目'
           })
           return
         }
         if (!this.listQuery.workinghour) {
           this.$vux.toast.show({
+            type: 'warn',
             text: '请填写工时'
           })
           return
@@ -215,10 +242,10 @@ export default {
         _this.resetTemp()
       } else {
         _this.$vux.toast.show({
-          text: '失败'
+          type: 'warn',
+          text: addWork.data.msg
         })
       }
-      console.log(addWork)
     }
   }
 }
@@ -243,6 +270,9 @@ export default {
   position: fixed;
   width: 100%;
   bottom: 0;
+  .weui-btn{
+    border-radius: 0;
+  }
 }
 .popup-top{
   margin-top: 20px;

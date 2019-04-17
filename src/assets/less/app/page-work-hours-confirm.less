@@ -6,10 +6,32 @@
     .weui-cells{
         font-size: 14px;
         margin-top: 0;
+        &:before{
+            height: 0;
+            border: none;
+        }
+    }
+
+    .weui-select{
+        height: 34px;
+        line-height: 34px;
+        border: 1px solid #9bc0dd;
+    }
+
+    .weui-cell_select{
+        .weui-select{
+            padding-left: 10px;
+        }
+        .weui-cell__bd{
+            padding-right: 10px;
+            &:after{
+                transform: matrix(.71,.71,-.71,.71,0,0) rotate(90deg);
+            }
+        }
     }
 
     .work-hours-wrap{
-        // margin-top: 35px;
+        margin-top: 15px;
     }
     
     .table{
