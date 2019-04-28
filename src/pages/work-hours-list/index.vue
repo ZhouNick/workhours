@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <popup-header title="首页" right-text="待办" @on-click-right="routerGoUpComing" />
     <group>
       <cell
         v-for="(item , index) in workingHourList"
@@ -19,13 +20,14 @@
 
 <script>
 import api from '@/api'
-import { Group, Cell, XButton } from 'vux'
+import { Group, Cell, XButton, PopupHeader } from 'vux'
 export default {
   name: 'WorkHoursList',
   components: {
     Group,
     Cell,
-    XButton
+    XButton,
+    PopupHeader
   },
   data () {
     return {
@@ -55,6 +57,11 @@ export default {
           item.createtime = year + '-' + month + '-' + date
           return item
         })
+      })
+    },
+    routerGoUpComing () {
+      this.$router.push({
+        path: '/upcoming/list'
       })
     }
   }
